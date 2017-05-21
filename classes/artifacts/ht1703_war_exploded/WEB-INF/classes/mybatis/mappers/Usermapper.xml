@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用来唯一标识当前映射文件的id-->
+<mapper namespace="cn.tarena.ht.mapper.UserMapper">
+
+	<select id="findAll" resultMap="userRM">
+		SELECT a.user_info_id, c.user_id, c.dept_id, c.username, a.name, d.dept_name, a.card_no, b.name manager_name, b.join_date, a.salary, c.state
+		FROM user_info_p a
+		left join user_info_p b on a.manager_id = b.user_info_id
+		left join user_p c on a.user_info_id = c.user_id
+		left join dept_p d on c.dept_id = d.dept_id
+		left join dept_p e on d.parent_id = e.dept_id
+	</select>
+
+	<resultMap id="userRM" type="cn.tarena.ht.pojo.User" autoMapping="true">
+		<id column="user_id" property="userId"></id>
+		<association property="dept" javaType="cn.tarena.ht.pojo.Dept">
+			<id column="dept_id" property="deptId"></id>
+			<result column="dept_name" property="deptName"/>
+		</association>
+		<association property="userInfo" javaType="cn.tarena.ht.pojo.UserInfo">
+		<id column="user_info_id" property="userInfoId"></id>
+		<result column="name" property="name"/>
+		<result column="join_date" property="joinDate"/>
+		<result column="salary" property="salary"/>
+		<result column="card_no" property="cardNo"/>
+		<association property="manager" javaType="cn.tarena.ht.pojo.UserInfo">
+			<result column="manager_name" property="name"/>
+		</association>
+	</association>
+	</resultMap>
+
+
+	<!--<insert id="insert" parameterType="">
+		INSERT INTO user_p() VALUES ()
+	</insert>-->
+
+
+	<insert id="saveUser">
+		insert into user_p(
+			user_id,
+			dept_id,
+			username,
+			password,
+			state,
+			create_time
+		)
+		VALUES (
+			#{userId},
+			#{dept.deptId},
+			#{username},
+			#{password},
+			#{state},
+			#{createTime}
+		)
+	</insert>
+
+
+	<select id="findUserByNameAndPassword" resultMap="userRM">
+		SELECT a.user_info_id, c.user_id, c.dept_id, c.username, a.name, d.dept_name, a.card_no, b.name manager_name, b.join_date, a.salary, c.state
+		FROM user_info_p a
+		left join user_info_p b on a.manager_id = b.user_info_id
+		left join user_p c on a.user_info_id = c.user_id
+		left join dept_p d on c.dept_id = d.dept_id
+		left join dept_p e on d.parent_id = e.dept_id
+		WHERE c.username = #{userName} AND c.password = #{password}
+	</select>
+
+	
+	
+
+</mapper>
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用来唯一标识当前映射文件的id-->
+<mapper namespace="cn.tarena.ht.mapper.RoleMapper">
+
+	<!--<select id="findAll" resultType="Role">-->
+		<!--SELECT * FROM role_p-->
+	<!--</select>-->
+
+	<delete id="deleteRoles">
+		delete from role_p where role_id in(
+		<foreach collection="array" item="roleId" separator=",">
+			#{roleId}
+		</foreach>
+		)
+	</delete>
+
+	
+	<insert id="save">
+		INSERT into role_p
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="roleId != null">role_id,</if>
+				<if test="name != null">name,</if>
+				<if test="remarks != null">remarks,</if>
+				<if test="orderNo != null">order_no</if>
+			</trim>
+		VALUES
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="roleId != null">#{roleId},</if>
+				<if test="name != null">#{name},</if>
+				<if test="remarks != null">#{remarks},</if>
+				<if test="orderNo != null">#{orderNo}</if>
+			</trim>
+	</insert>
+
+	
+	<update id="update" parameterType="Role">
+		update role_p
+		<set>
+			name = #{name},
+			remarks = #{remarks},
+			order_no = #{orderNo},
+			<if test="createBy != null"> create_by = #{createBy}</if>
+		</set>
+		WHERE role_id = #{roleId}
+	</update>
+
+
+	<delete id="deleteRoleModuleByRoleIds">
+		delete from role_module_p where role_id in(
+			<foreach collection="array" item="roleId" separator=",">
+				#{roleId}
+			</foreach>
+		)
+	</delete>
+
+</mapper>
+

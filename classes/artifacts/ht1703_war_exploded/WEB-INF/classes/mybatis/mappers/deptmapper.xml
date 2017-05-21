@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用来唯一标识当前映射文件的id-->
+<mapper namespace="cn.tarena.ht.mapper.DeptMapper">
+
+
+	
+	<select id="findAll" resultType="Dept">
+		select a.dept_id, 
+			   b.dept_name parent_dept, 
+			   a.dept_name, 
+			   a.state 
+	    from dept_p a 
+	    left join dept_p b 
+	    on a.parent_id = b.dept_id 
+	    order by a.dept_id
+	</select>
+
+	<update id="updateState">
+		update dept_p set state = #{state} where dept_id in ( 
+		<foreach collection="deptIds" item="deptId" separator=",">
+			#{deptId}
+		</foreach>
+		)
+	</update>
+<!-- 	<update id="updateState">
+		update dept_p set state = #{state} where dept_id = #{deptId}
+	</update> -->
+
+
+	<update id="DeptdeleteDepts">
+		delete from dept_p where dept_id in ( 
+		<foreach collection="array" item="deptId" separator=",">
+			#{deptId}
+		</foreach>
+		)
+	</update>
+
+
+	<select id="findOne" resultType="Dept">
+		select *
+	    from dept_p where dept_id = #{id}
+	</select>
+
+
+	<insert id="insert">
+		insert into dept_p(dept_id, dept_name, parent_id, state) values(#{deptId}, #{deptName}, #{parentDept}, #{state})
+	</insert>
+
+</mapper>
+

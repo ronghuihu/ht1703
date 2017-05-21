@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用来唯一标识当前映射文件的id-->
+<mapper namespace="cn.tarena.ht.mapper.UserInfoMapper">
+
+
+	
+	<!--<select id="findAll" resultType="Dept">
+		SELECT a.user_info_id, a.name username, b.name manager_name, c.password, d.dept_name, e.dept_name parentDept
+		FROM user_info_p a 
+		left join user_info_p b on a.manager_id = b.user_info_id
+		left join user_p c on a.user_info_id = c.user_id
+		left join dept_p d on c.dept_id = d.dept_id
+		left join dept_p e on d.parent_id = e.dept_id
+	</select>-->
+	
+	
+	<select id="findAll" resultType="cn.tarena.ht.pojo.UserInfo">
+		SELECT  * FROM  user_info_p
+	</select>
+
+	<insert id="saveUserInfo">
+		INSERT INTO user_info_p(
+			user_info_id,
+			name,
+			card_no,
+			manager_id,
+			join_date,
+			salary,
+			create_time
+		)VALUES (
+			#{userInfoId},
+			#{name},
+			#{cardNo},
+			#{manager.userInfoId},
+			#{joinDate, jdbcType=DATE},
+			#{salary, jdbcType=DATE},
+			#{createTime, jdbcType=DATE}
+		)
+	</insert>
+	
+</mapper>
+

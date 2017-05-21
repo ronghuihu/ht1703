@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--用来唯一标识当前映射文件的id-->
+<mapper namespace="cn.tarena.ht.mapper.ModuleMapper">
+
+
+	
+	<select id="findAll" resultMap="moduleRM">
+		SELECT  m.module_id,
+				m.name,
+				p.module_id parent_module_id,
+				p.name parent_name,
+				m.ctype,
+				m.state
+		FROM module_p m
+		left join module_p p on m.parent_id = p.module_id
+		order by m.order_no
+	</select>
+
+
+	<select id="findOne" resultType="cn.tarena.ht.pojo.Module">
+		SELECT
+			m.module_id,
+			m.name,
+			m.ctype,
+			m.state
+		FROM module_p m
+		WHERE m.module_id = #{moduleId}
+	</select>
+
+
+	<resultMap id="moduleRM" type="cn.tarena.ht.pojo.Module" autoMapping="true">
+		<id column="module_id" property="moduleId"></id>
+		<association property="parentModule" javaType="cn.tarena.ht.pojo.Module">
+			<id column="parent_module_id" property="moduleId"></id>
+			<result column="parent_name" property="name"/>
+		</association>
+	</resultMap>
+
+
+	<delete id="deleteModules">
+		DELETE from module_p WHERE module_id in (
+			<foreach collection="array" item="module" separator=",">
+				#{module}
+			</foreach>
+		)
+	</delete>
+
+
+	<insert id="saveModule">
+		INSERT INTO module_p(
+			<trim suffixOverrides=",">
+				<if test="moduleId != null">module_id,</if>
+				<if test="parentModule.moduleId != null">parent_id,</if>
+				<if test="name != null">name,</if>
+				<if test="ctype != null">ctype,</if>
+				<if test="state != null">state,</if>
+				<if test="orderNo != null">order_no</if>
+			</trim>
+		)
+		VALUES (
+			<trim suffixOverrides=",">
+				<if test="moduleId != null">#{moduleId},</if>
+				<if test="parentModule.moduleId != null">#{parentModule.moduleId},</if>
+				<if test="name != null">#{name},</if>
+				<if test="ctype != null">#{ctype},</if>
+				<if test="state != null">#{state},</if>
+				<if test="orderNo != null">#{orderNo}</if>
+			</trim>
+		)
+	</insert>
+	
+	<update id="updateState">
+		update module_p set state = #{state} where module_id in (
+		<foreach collection="moduleIds" item="moduleId" separator=",">
+			#{moduleId}
+		</foreach>
+		)
+	</update>
+
+</mapper>
+

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ht1703:war">
+    <output-path>$PROJECT_DIR$/classes/artifacts/ht1703_war</output-path>
+    <root id="archive" name="ht1703_war.war">
+      <element id="artifact" artifact-name="ht1703:war exploded" />
+    </root>
+  </artifact>
+</component>
